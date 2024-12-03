@@ -12,19 +12,18 @@ class Ollama(BaseLlm):
         template = """Question: {question}
         Answer: Let's think step by step."""
         prompt = ChatPromptTemplate.from_template(template)
-        model = OllamaLLM(model="llama3")
+        model = OllamaLLM(model=self.llm_request.get_model())
         chain = prompt | model
         return chain.invoke({"question": self.llm_request.get_user_msg()})
         
     
     def chat(self):
         llm = ChatOllama(
-            model="llama3.2",
-            temperature=0.8,
-            num_predict=256,
+            model=self.llm_request.get_model(),
+            temperature=self.llm_request.get_temp(),
+            num_predict=self.llm_request.get_num_ctx(),
         )
 
-        print("Invocation!!")
         messages = [
             (
                 "system",
@@ -34,8 +33,6 @@ class Ollama(BaseLlm):
         ]
         ai_msg = llm.invoke(messages)
         print(ai_msg.content)
-
-        print("Chaining!!")
 
         prompt = ChatPromptTemplate.from_messages(
             [
@@ -61,7 +58,7 @@ class Ollama(BaseLlm):
     
     def embeddings(self):
         embed = OllamaEmbeddings(
-            model="llama3.2"
+            model=self.llm_request.get_model()
         )
 
         input_text = self.llm_request.get_user_msg()
