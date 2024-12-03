@@ -14,7 +14,7 @@ class Ollama(BaseLlm):
         prompt = ChatPromptTemplate.from_template(template)
         model = OllamaLLM(model="llama3")
         chain = prompt | model
-        return chain.invoke({"question": "What is LangChain?"})
+        return chain.invoke({"question": self.llm_request.get_user_msg()})
         
     
     def chat(self):
@@ -30,7 +30,7 @@ class Ollama(BaseLlm):
                 "system",
                 "You are a helpful assistant that translates English to French. Translate the user sentence.",
             ),
-            ("human", "I love programming."),
+            ("human", self.llm_request.get_user_msg()),
         ]
         ai_msg = llm.invoke(messages)
         print(ai_msg.content)
@@ -52,7 +52,7 @@ class Ollama(BaseLlm):
             {
                 "input_language": "English",
                 "output_language": "German",
-                "input": "I love programming.",
+                "input": self.llm_request.get_user_msg(),
             }
         )
         print(ai_msg_chain.content)
@@ -64,11 +64,11 @@ class Ollama(BaseLlm):
             model="llama3.2"
         )
 
-        input_text = "The meaning of life is 42"
+        input_text = self.llm_request.get_user_msg()
         vector = embed.embed_query(input_text)
         print(vector[:3])
 
-        input_texts = ["Hi, how are you?", "This is my first ollama"]
+        input_texts = [self.llm_request.get_user_msg(), self.llm_request.get_user_msg()]
         vectors = embed.embed_documents(input_texts)
         print(len(vectors))
         print(vectors[0][:3])
