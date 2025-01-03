@@ -1,6 +1,7 @@
 import streamlit as st
 from ollama_llm import Ollama
 from llm_request import LLMRequest
+from chatgpt_llm import ChatGptLlm
 
 llmrequest = None
 
@@ -10,22 +11,29 @@ with st.sidebar:
     framework_llm = st.sidebar.selectbox(
         "What framework to use?",
         ('ollama',
+         'openai',
         'huggingface',
         'other')
     )
 
+    model_name = None
+
     if framework_llm == "ollama":
-        pass
+        model_name = st.selectbox(
+           "which model to use?",
+            ("llama3.2", "bespoke-minicheck", "all-minillm", "codellama", "meditron" )
+        )
     elif framework_llm == "huggingface":
         pass
+    elif framework_llm == "openai":
+        model_name = st.selectbox(
+           "which model to use?",
+            ("gpt-4o-mini", "text-embedding-3-large", "got-4o", "gpt-4o-audio-preview", "gpt-3.5-turbo-instruct" )
+        )
     else:
         pass
 
-    #Ask option for model
-    model_name = st.selectbox(
-        "which model to use?",
-        ("llama3.2", "bespoke-minicheck", "all-minillm", "codellama" )
-    )
+
 
     purpose = st.selectbox(
         "Purpose?",
@@ -71,5 +79,11 @@ if prompt := st.chat_input():
     if framework_llm == "ollama":
         ollamallm = Ollama(llmrequest)
         asst_response = ollamallm.invoke()
+        st.session_state.messages.append({"role": "assistant", "content": asst_response})
+        st.chat_message("assistant").write(asst_response)
+
+    elif framework_llm == "openai":
+        openaillm = ChatGptLlm(llmrequest)
+        asst_response = openaillm.invoke()
         st.session_state.messages.append({"role": "assistant", "content": asst_response})
         st.chat_message("assistant").write(asst_response)
