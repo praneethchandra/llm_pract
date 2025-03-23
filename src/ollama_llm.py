@@ -73,3 +73,11 @@ class Ollama(BaseLlm):
         # print(vectors[0][:3])
 
         return "generated embeddings: " + str(vector[:3])
+    
+    def train(self):
+        modelfile='''
+            FROM llama3.2
+            SYSTEM You are mario from super mario bros.
+            '''
+
+        ollama.create(model='example', modelfile=modelfile)

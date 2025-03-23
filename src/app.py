@@ -21,7 +21,7 @@ with st.sidebar:
     if framework_llm == "ollama":
         model_name = st.selectbox(
            "which model to use?",
-            ("llama3.2", "bespoke-minicheck", "all-minillm", "codellama", "meditron" )
+            ("llama3.2", "bespoke-minicheck", "all-minillm", "codellama", "meditron", "deepseek-r1:1.5b", "deepseek-r1:7b", "deepseek-r1:8b" )
         )
     elif framework_llm == "huggingface":
         pass

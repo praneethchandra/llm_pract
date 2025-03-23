@@ -16,6 +16,10 @@ class BaseLlm:
         print("Base implementation not exist!")
         pass
 
+    def train(self):
+        print("Base implemenation do not exist!")
+        pass
+
     def invoke(self):
         if self.llm_request.get_purpose() == "Text Completion":
             return self.text_completion()
